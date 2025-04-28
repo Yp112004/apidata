@@ -96,6 +96,98 @@
     <tbody></tbody>
   </table>
 
+  <script>
+    let originalData = [];
 
+    async function fetchRegistrants() {
+      try {
+        // Replace localhost with your live server URL (e.g., https://yourdomain.com/api/registrants/fetch)
+        const response = await axios.get('https://apidata-awie.vercel.app/api/registrants/fetch');
+      
+        
+        // Ensure the response is valid
+        if (response.data && response.data.savedData) {
+          originalData = response.data.savedData;
+          renderTables(originalData);
+        } else {
+          console.error('No registrant data found in the response.');
+        }
+      } catch (error) {
+        console.error('Error loading registrants:', error.message);
+      }
+    }
+
+    function filterByDate() {
+      const selectedDate = document.getElementById('dateFilter').value;
+      if (!selectedDate) {
+        renderTables(originalData);
+        return;
+      }
+
+      const filtered = originalData.filter(reg => {
+        const signupDate = reg.webinarResponse?.signup_date;
+        if (!signupDate) return false;
+
+        const localDate = new Date(signupDate);
+        const formatted = localDate.getFullYear() + '-' +
+          String(localDate.getMonth() + 1).padStart(2, '0') + '-' +
+          String(localDate.getDate()).padStart(2, '0');
+
+        return formatted === selectedDate;
+      });
+
+      renderTables(filtered);
+    }
+
+    function renderTables(data) {
+      const tbody = document.querySelector('#registrantsTable tbody');
+      const attendedNoTable = document.querySelector('#attendedNoTable tbody');
+      const attendedLiveCountElement = document.querySelector('#attendedLiveCount');
+      const attendedNoCountElement = document.querySelector('#attendedNoCount');
+
+      tbody.innerHTML = '';
+      attendedNoTable.innerHTML = '';
+      let attendedLiveCount = 0;
+      let notAttendedLiveCount = 0;
+
+      data.forEach(reg => {
+        const webinarReg = reg.webinarResponse;
+        if (!webinarReg) return;
+
+        const fullName = `${webinarReg.first_name} ${webinarReg.last_name}`;
+        const signupDate = webinarReg.signup_date || 'N/A';
+        const attendedLive = webinarReg.attended_live ? 'Yes' : 'No'; // Check for boolean
+
+        if (attendedLive === 'Yes') {
+          attendedLiveCount++;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${fullName}</td>
+            <td>${webinarReg.email}</td>
+            <td>${webinarReg.phone_number}</td>
+            <td>${signupDate}</td>
+            <td>${attendedLive}</td>
+          `;
+          tbody.appendChild(row);
+        } else {
+          notAttendedLiveCount++;
+          const noAttendedRow = document.createElement('tr');
+          noAttendedRow.innerHTML = `
+            <td>${fullName}</td>
+            <td>${webinarReg.phone_number}</td>
+            <td>${webinarReg.email}</td>
+            <td>${signupDate}</td>
+            <td>${attendedLive}</td>
+          `;
+          attendedNoTable.appendChild(noAttendedRow);
+        }
+      });
+
+      attendedLiveCountElement.textContent = `Attended Live: ${attendedLiveCount}`;
+      attendedNoCountElement.textContent = `Not Attended Live: ${notAttendedLiveCount}`;
+    }
+
+    fetchRegistrants();
+  </script>
 </body>
 </html>
