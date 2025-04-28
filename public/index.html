@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrants</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    .filter-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .filter-container input {
+      padding: 8px;
+      font-size: 1rem;
+    }
+    .attended-live, .attended-no {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    .attended-no {
+      background: #f44336;
+      margin-top: 40px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #333;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>All Webinar Registrants</h1>
+
+  <div class="filter-container">
+    <label for="dateFilter">Filter by Signup Date:</label>
+    <input type="date" id="dateFilter" onchange="filterByDate()" />
+  </div>
+
+  <div id="attendedLiveCount" class="attended-live">
+    Attended Live: 0 
+  </div>
+  
+  <table id="registrantsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Signup Date</th>
+        <th>Attended Live</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="attendedNoCount" class="attended-no">
+    Attended Live: No
+  </div>
+  
+  <table id="attendedNoTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Signup Date</th>
+        <th>Attended Live</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+
+</body>
+</html>
